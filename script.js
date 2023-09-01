@@ -26,27 +26,32 @@ function displayDate() {
 };
 
 function setSchedulerClass() {
-  let $timeBlock = $('.time-block');
-  let $time = $timeBlock.find('.hour');
+  let timeBlock = $('.time-block');
+  let timeText = timeBlock.find('.hour');
 
-  for(let i = 0; i < $timeBlock.length; i++) {
-    let time = dayjs($time.eq(i).text(), "ha");
+  for(let i = 0; i < timeBlock.length; i++) {
+    let time = dayjs(timeText.eq(i).text(), "ha");
     if (dayjs().isBefore(time, 'hour')) {
-      $timeBlock.eq(i).addClass('future');
+      timeBlock.eq(i).addClass('future');
     } else if (dayjs().isSame(time, 'hour')) {
-      $timeBlock.eq(i).addClass('present');
+      timeBlock.eq(i).addClass('present');
     } else {
-      $timeBlock.eq(i).addClass('past');
+      timeBlock.eq(i).addClass('past');
     }
   }
 };
 
-function saveWork() {
-
+function saveWork(event) {
+  let timeBlock = $(this.parentElement);
+  localStorage.setItem(timeBlock.attr("id"), timeBlock.find('.description').val())
 };
 
 function loadWork() {
+  let timeBlock = $(".time-block")
 
+  for(let i = 0; i < timeBlock.length; i++) {
+    timeBlock.eq(i).find(".description").val(localStorage.getItem(timeBlock.eq(i).attr("id")))
+  }
 };
 
 $(function () {
@@ -63,4 +68,6 @@ $(function () {
   // attribute of each time-block be used to do this?
   $("#currentDay").text(displayDate());
   setSchedulerClass();
+  loadWork();
+  $(".saveBtn").on('click', saveWork);
 });
